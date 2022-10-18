@@ -40,7 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #Third Apps
+    'django_extensions',
     'debug_toolbar',
+    'django_bootstrap5',
+    'rest_framework',
+    #Local App
+    'accounts',
+    'instagram',
+    'drf_instagram',
+    'todo',
+    'music_demo'
 ]
 
 MIDDLEWARE = [
@@ -122,15 +131,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_FILES_DIRS=[
+STATIC_URL = 'static/'
+STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'instagram_clone','static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
+AUTH_USER_MODEL = 'accounts.User'
+
+#Rest frame work로 url접근시 기본적으로 로그인 되어있고(IsAuthenticated)
+#로그인 되어있지 않다면 읽기만 가능하게 설정
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSON_CLASSES":[
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ]
+}
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

@@ -1,0 +1,27 @@
+{% extends 'instagram/layout.html' %}
+{% block content %}
+    <div class='container'>
+        <div class='row'>
+            <div class='col-sm-3' style='text_align:center;'>
+                {% if not user.avatar %}
+                    <svg width="120" height="120" data-jdenticon-value="{{user.username}}" class='rounded-circle'></svg>
+                {% else %}
+                    <img src="{{user.avatar.url}}" class='rounded-circle'/>
+                {% endif %}
+            </div>
+            <div class='col-sm-9'>
+                {{user.username|default:None}}
+                <a href="{% url 'profile_edit' %}">Edit profile</a>
+            </div>
+            {% for post in post_list %}
+                <div class='col-sm-4'>
+                    {% if post.photo %}
+                        {{post.photo.url}}
+                    {% else %}
+                        {{post.caption}}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

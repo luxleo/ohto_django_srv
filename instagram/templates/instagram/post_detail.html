@@ -1,0 +1,34 @@
+{% extends 'instagram/layout.html' %}
+{% block content %}
+    <div class='container'>
+        <div class='row'>
+            <div class='col-sm-13'>
+                <div class='card'>
+                    <div class='card-header'>
+                        {% if not post.author.avatar %}
+                            <svg width="24" height="24" data-jdenticon-value="{{user.username}}"></svg>{{user.username|default:None}}
+                        {% else %}
+                            <img src="{{post.author.avatar_url}}"/>
+                        {% endif %}
+                        {{post.author.name}}
+                    </div>
+                    <div class='card-body'>
+                        {% comment %}
+                            account/models에 name 함수를 property로 등록했기 때문에 호출가능하다
+                        {% endcomment %}
+                        {% if post.photo %}
+                            <img src="{{post.photo.url}}"/>
+                        {% endif %}
+                    </div>
+                    <div class='card-footer'>
+                        <span class='badge badge-primary'>
+                            {% for tag in post.tag_set.all %}
+                                #{{tag.name}}
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
