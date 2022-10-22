@@ -25,7 +25,7 @@ def signup(req):
 
 class CustomLoginView(LoginView):
     template_name='accounts/login_form.html'
-    next_page = 'login'
+    next_page = 'template_index'
 
 #login = LoginView.as_view(template_name = 'accounts/login_form.html')
 login = CustomLoginView.as_view()

@@ -8,8 +8,8 @@ from rest_framework.decorators import action
 
 from django.db.models import Q 
 
-from .serializers import PlayListSerializer, SongSerializer
-from .models import PlayList, Song, PlayListAndSongJoin
+from ..serializers import PlayListSerializer, SongSerializer
+from ..models import PlayList, Song, PlayListAndSongJoin
 from django.shortcuts import render
 import json
 
@@ -60,16 +60,6 @@ class ModelSongListView(viewsets.ModelViewSet):
         serializer = SongSerializer(queryset, many=True)
         return Response({'songs':serializer.data}, template_name='music_demo/song_list.html')
 
-class SongListView(views.APIView):
-    renderer_classes=[TemplateHTMLRenderer]
-    template_name = 'music_demo/song_list.html'
-
-    def get(self,req):
-        search = req.GET.get('search',None)
-        qs = Song.objects.filter(Q(title__icontains=search) | Q(artist__icontains=search))
-        return Response({"songs":qs})
-
-song_list = SongListView.as_view()
 
 class InsertSongView(views.APIView):
     def post(self,request):

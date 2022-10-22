@@ -18,23 +18,22 @@
     <header class='container'>
         <div class='row'>
             <div class="d-flex flex-column flex-md-row align-items-center pb-1 mb-4 border-bottom">
-              <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+              <a href="/template/" class="d-flex align-items-center text-dark text-decoration-none">
                 <img width="142" height="99" src="{% static "melon.png" %}" alt="Melon">
               </a>
           
-              <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <form action="{% url 'song_list' %}" method='GET'>
-                  <div class=" me-3 py-2 input-group">
-                    <div class="form-outline">
-                      <input name='search' type="search" id="form1" class="form-control" />
-                      <label class="form-label" for="form1">Search</label>
+              <nav class="navbar d-flex justify-content-between mt-2 mt-md-0 ms-md-auto">
+                <div class='me-2'>
+                  <form action="{% url 'template_song_list' %}" method='GET' class="form-inline">
+                    <div class='form-group mr-1' style="display:flex;flex-direction:row;">
+                      <input name='search' type="search" id="form1" class="form-control mr-sm-2" placeholder="Search" aria-label="Search" />
+                      <button type="submit" class="btn btn-outline-success ">
+                        <i class="fas fa-search"></i>
+                      </button>
                     </div>
-                    <button type="button" class="btn btn-primary">
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </div>
-                </form>
-                <a class="me-3 py-2 text-dark text-decoration-none" href="#">Features</a>
+                  </form>
+                </div>
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'template/playlist_list' %}">My Playlists</a>
                 {% if user.pk %}
                   <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'instagram:user_page' user_name=user.username %}">
                     {% if user.avatar %}
@@ -61,57 +60,14 @@
     {% block content %}
 
     {% endblock content %}
-    <div class='container'>
-    <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
-        <div class="col mb-3">
-          <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-          </a>
-          <p class="text-muted">© 2022</p>
-        </div>
-    
-        <div class="col mb-3">
-    
-        </div>
-    
-        <div class="col mb-3">
-          <h5>Section</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-          </ul>
-        </div>
-    
-        <div class="col mb-3">
-          <h5>Section</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-          </ul>
-        </div>
-    
-        <div class="col mb-3">
-          <h5>Section</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-          </ul>
-        </div>
-      </footer>
-    </div>
+
     <script src="{% static 'bootstrap-5.2.1-dist/js/bootstrap.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/jdenticon@3.2.0/dist/jdenticon.min.js" async
         integrity="sha384-yBhgDqxM50qJV5JPdayci8wCfooqvhFYbIKhv0hTtLvfeeyJMJCscRfFNKIxt43M"
         crossorigin="anonymous">
-</script>
+    </script>
+  {% block script %}
+
+  {% endblock script %}
 </body>
 </html>

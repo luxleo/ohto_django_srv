@@ -2,11 +2,24 @@
 {% load django_bootstrap5 %}
 {% block content %}
     <div class='container'>
+        <button id='show_playlist_button'>add</button>
         <div class='row'>
-            <div class='col-sm-6 offset-sm-3'>
+            <div class='col-sm-3'>
+                <div class='container'>
+                    <div class='row'  id='mini_playlist'>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class='col-sm-6'>
+                {{song_number}} songs
                 {% for song in songs %}
                     <div class='container'>
                         <div class='row'>
+                            <div class='col-sm-3'>
+                                <input class="form-check-input" type="checkbox" id="{{song.id}}" value="" aria-label="...">
+                              </div>
                             <div class='col-sm-3'>
                                 <p>{{song.artist}}</p>
                             </div>
@@ -21,4 +34,84 @@
         </div>
     </div>
 
+    <div class="modal fade" id="playlistCreateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'template/playlist_list' %}" method='POST'>
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="playlistTitle" class="col-form-label">Title:</label>
+                  <input type="text" class="form-control" id="playlistTitle" name='title'>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Send message</button>
+            </div>
+          </div>
+        </div>
+      </div>
 {% endblock content %}
+{% block script %}
+    <script>
+        /*TODO*/
+        let is_renderd=false;
+        const httpRequest = new XMLHttpRequest();
+        httpRequest.onload = function(){
+            let playlist_list = JSON.parse(this.responseText);
+            console.log(playlist_list);
+            const mini_playlist = document.querySelector('#mini_playlist');
+            const lastEl = document.createElement('div',{class:"col-sm-3"});
+            lastEl.innerHTML = '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#playlistCreateModal" >Create</button>';
+            playlist_list.forEach(function(playlist){
+                let new_el = document.createElement('div',{class:"col-sm-6 offset-sm-3"});
+                new_el.innerHTML = `<div class="playlist" id="${playlist.id}">${playlist.title}</div>`
+                mini_playlist.appendChild(new_el);
+            })
+            mini_playlist.appendChild(lastEl);
+            const playlists = document.querySelectorAll('.playlist');
+            playlists.forEach((playlist)=>playlist.addEventListener("click",addSongs));
+        };
+        function show_playlist(e){
+            if (is_renderd){
+                return ;
+            }
+            is_renderd = true;
+            const checked = document.querySelectorAll(".form-check-input:checked");
+            console.log(checked.length);
+            httpRequest.open('GET','http://127.0.0.1:8000/template/mini_playlists',true);
+            httpRequest.send(null);
+
+        }
+        const shower = document.querySelector('#show_playlist_button');
+        shower.addEventListener("click",show_playlist);
+
+        async function addSongs(e){
+            const selected_songs_el = document.querySelectorAll(".form-check-input:checked");
+            playlist_id = e.target.id
+            selected_songs = [];
+            selected_songs_el.forEach((song)=>selected_songs.push(song.id));
+
+            await fetch(`http://127.0.0.1:8000/template/playlist/${playlist_id}/`,{
+                method:'POST',
+                headers:{"Content-Type":'application/json',"X-CSRFToken": '{{csrf_token}}'},
+                body:JSON.stringify({"playlist_id":playlist_id,"selected_songs":selected_songs,"delete_option":0})
+            }
+            ).then((res)=>{
+                if(res.redirected){
+                    window.location.href=res.url;
+                }
+            })
+            console.log(e.target.id);
+            console.log(selected_songs);
+            //const res= await fetch('http://127.0.0.1:8000/template/playlist/')
+        }
+
+    </script>
+{% endblock script %}
