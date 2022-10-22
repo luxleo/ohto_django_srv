@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     #Local App
     'accounts',
     'instagram',
-    'drf_instagram',
-    'todo',
     'music_demo'
 ]
 
