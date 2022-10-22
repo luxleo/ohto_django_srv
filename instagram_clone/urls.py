@@ -27,7 +27,6 @@ urlpatterns = [
     path('',include('music_demo.urls')),
     path('instagram/',include('instagram.urls')),
     path('instagram/',login_required(TemplateView.as_view(template_name='root.html')),name='root'),
-    path('todo/',include('todo.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
