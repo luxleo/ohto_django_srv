@@ -25,11 +25,10 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('api_auth',include('rest_framework.urls')),
     path('',include('music_demo.urls')),
-    path('instagram/',include('instagram.urls')),
-    path('instagram/',login_required(TemplateView.as_view(template_name='root.html')),name='root'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
     document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
     urlpatterns+=[path('__debug__/',include('debug_toolbar.urls'))]
 

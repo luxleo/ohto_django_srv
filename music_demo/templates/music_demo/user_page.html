@@ -1,4 +1,4 @@
-{% extends 'instagram/layout.html' %}
+{% extends 'layout.html' %}
 {% block content %}
     <div class='container'>
         <div class='row'>
@@ -13,15 +13,6 @@
                 {{user.username|default:None}}
                 <a href="{% url 'profile_edit' %}">Edit profile</a>
             </div>
-            {% for post in post_list %}
-                <div class='col-sm-4'>
-                    {% if post.photo %}
-                        {{post.photo.url}}
-                    {% else %}
-                        {{post.caption}}
-                    {% endif %}
-                </div>
-            {% endfor %}
             <div style='display:grid; justify-content:center; width:100%;'>
                 <a href="{% url 'logout' %}">
                     <button class='btn-sm btn-secondary' style="">Logout</button>

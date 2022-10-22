@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram clone practice</title>
     <link rel="stylesheet" href="{% static "bootstrap-5.2.1-dist/css/bootstrap.min.css" %}"/>
+    <script src="{% static 'bootstrap-5.2.1-dist/js/bootstrap.bundle.min.js' %}"></script>
 
 </head>
 <body>
@@ -35,7 +36,7 @@
                 </div>
                 <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'template/playlist_list' %}">My Playlists</a>
                 {% if user.pk %}
-                  <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'instagram:user_page' user_name=user.username %}">
+                  <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'template_user_page' user_name=user.username %}">
                     {% if user.avatar %}
                       <img style="width=24 height=24" src="{{user.avatar.url}}"/>{{user.username|default:None}}
                     {% else %}
@@ -57,17 +58,22 @@
         </div>
       {% endfor %}
     {% endif %}
+
+
     {% block content %}
 
     {% endblock content %}
 
-    <script src="{% static 'bootstrap-5.2.1-dist/js/bootstrap.min.js' %}"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/jdenticon@3.2.0/dist/jdenticon.min.js" async
         integrity="sha384-yBhgDqxM50qJV5JPdayci8wCfooqvhFYbIKhv0hTtLvfeeyJMJCscRfFNKIxt43M"
         crossorigin="anonymous">
     </script>
+
   {% block script %}
 
   {% endblock script %}
+
 </body>
 </html>

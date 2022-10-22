@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django.conf import settings
 from django.db import models
 
@@ -24,6 +25,12 @@ class PlayListTag(models.Model):
     #삭제 같은 경우에 playlist삭제시 이 테이블 다 조회해서 삭제한다
     #또는 플레이리스트 자체 수정일 때는 id 넘겨서 삭제해도 된다.
 
-class SongTag(models.Model):
+class TopicTag(models.Model):
+    song_id = models.IntegerField(default=0)
+    tag_name = models.CharField(max_length=50)
+class MoodTag(models.Model):
+    song_id = models.IntegerField(default=0)
+    tag_name = models.CharField(max_length=50)
+class SituationTag(models.Model):
     song_id = models.IntegerField(default=0)
     tag_name = models.CharField(max_length=50)

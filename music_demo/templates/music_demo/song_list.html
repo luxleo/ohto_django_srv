@@ -2,34 +2,55 @@
 {% load django_bootstrap5 %}
 {% block content %}
     <div class='container'>
-        <button id='show_playlist_button'>add</button>
         <div class='row'>
             <div class='col-sm-3'>
-                <div class='container'>
-                    <div class='row'  id='mini_playlist'>
-                        
-                    </div>
-                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="show_playlist_button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Topic Tag
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="show_playlist_button" id='playlist_list_ul'>
+                    </ul>
+                  </div>
             </div>
 
             <div class='col-sm-6'>
                 {{song_number}} songs
-                {% for song in songs %}
-                    <div class='container'>
-                        <div class='row'>
-                            <div class='col-sm-3'>
-                                <input class="form-check-input" type="checkbox" id="{{song.id}}" value="" aria-label="...">
-                              </div>
-                            <div class='col-sm-3'>
-                                <p>{{song.artist}}</p>
+                {% if is_bulk %}
+                    {% for id,song in songs.items  %}
+                        <div class='container'>
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <input class="form-check-input" type="checkbox" id="{{song.id}}" value="" aria-label="...">
+                                  </div>
+                                <div class='col-sm-3'>
+                                    <p>{{song.artist}}</p>
+                                </div>
+                                <div class='col-sm-6'>
+                                    {{song.title}}
+                                </div>
                             </div>
-                            <div class='col-sm-6'>
-                                {{song.title}}
-                            </div>
+
                         </div>
-                        
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {% for song in songs %}
+                        <div class='container'>
+                            <div class='row'>
+                                <div class='col-sm-3'>
+                                    <input class="form-check-input" type="checkbox" id="{{song.id}}" value="" aria-label="...">
+                                  </div>
+                                <div class='col-sm-3'>
+                                    <p>{{song.artist}}</p>
+                                </div>
+                                <div class='col-sm-6'>
+                                    {{song.title}}
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
             </div>
         </div>
     </div>
@@ -66,16 +87,15 @@
         httpRequest.onload = function(){
             let playlist_list = JSON.parse(this.responseText);
             console.log(playlist_list);
-            const mini_playlist = document.querySelector('#mini_playlist');
+            const mini_playlist = document.querySelector('#playlist_list_ul');
+            mini_playlist.innerHTML = "";
             const lastEl = document.createElement('div',{class:"col-sm-3"});
-            lastEl.innerHTML = '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#playlistCreateModal" >Create</button>';
+            lastEl.innerHTML = '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#playlistCreateModal" style="width:100%;" >Create</button>';
             playlist_list.forEach(function(playlist){
-                let new_el = document.createElement('div',{class:"col-sm-6 offset-sm-3"});
-                new_el.innerHTML = `<div class="playlist" id="${playlist.id}">${playlist.title}</div>`
-                mini_playlist.appendChild(new_el);
+                mini_playlist.innerHTML+=`<li class="dropdown-item" id="${playlist.id}" style="justify-content:center; display:flex;"><div>${playlist.title}</div></li>`
             })
             mini_playlist.appendChild(lastEl);
-            const playlists = document.querySelectorAll('.playlist');
+            const playlists = document.querySelectorAll('.dropdown-item');
             playlists.forEach((playlist)=>playlist.addEventListener("click",addSongs));
         };
         function show_playlist(e){

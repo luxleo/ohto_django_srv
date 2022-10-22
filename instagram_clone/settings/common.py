@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework',
     #Local App
     'accounts',
-    'instagram',
     'music_demo'
 ]
 

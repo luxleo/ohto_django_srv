@@ -7,8 +7,9 @@ from django.shortcuts import redirect,get_object_or_404
 from django.db.models import Q
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth import get_user_model
 
-from ..models import Song,PlayList,PlayListAndSongJoin
+from ..models import MoodTag, SituationTag, Song,PlayList,PlayListAndSongJoin, TopicTag
 from ..serializers import PlayListSerializer,PlayListCreateSerializer
 import json
 
@@ -17,7 +18,19 @@ class LandingPageView(views.APIView):
     template_name = 'music_demo/layout.html'
 
     def get(self,req):
-        return Response(status=status.HTTP_200_OK)
+        return Response({"index":True},status=status.HTTP_200_OK)
+
+class FilterSongByTagView(views.APIView):
+    renderer_classes=[TemplateHTMLRenderer]
+    template_name='music_demo/song_list.html'
+    def get(self,req,tag_group,tag_name):
+        tag_group_obj = [TopicTag,MoodTag,SituationTag]
+        tag_name_list = ["topic_tag","mood_tag","situation_tag"]
+        target = tag_name_list.index(tag_group)
+        qs = tag_group_obj[target].objects.filter(tag_name=tag_name).values_list('song_id',flat=True)
+        song_id_list = list(qs)
+        songs = Song.objects.in_bulk(song_id_list)
+        return Response({"songs":songs,"song_number":len(songs),"is_bulk":True})
 
 class SongListView(views.APIView):
     renderer_classes=[TemplateHTMLRenderer]
@@ -26,7 +39,7 @@ class SongListView(views.APIView):
     def get(self,req):
         search = req.GET.get('search',None)
         qs = Song.objects.filter(Q(artist__icontains=search) | Q(title__icontains=search))
-        return Response({"songs":qs,'song_number':len(qs)})
+        return Response({"songs":qs,'song_number':len(qs),"is_bulk":False})
 
 class MiniPlaylistsAPi(views.APIView):
     def get(self,req):
@@ -92,6 +105,12 @@ class PlayListAPI(views.APIView):
             song.delete()
         playlist.delete()
         return HttpResponseRedirect(reverse('template/playlist_list'))
+class UserPageView(views.APIView):
+    renderer_classes=[TemplateHTMLRenderer]
+    template_name = 'music_demo/user_page.html'
+    def get(self,req,user_name):
+        page_user = get_object_or_404(get_user_model(),username=user_name,is_active=True)
+        return Response({'page_user':page_user})
 
 landing_page = LandingPageView.as_view()
 song_list = SongListView.as_view()
