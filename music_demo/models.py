@@ -1,19 +1,27 @@
-from unittest.util import _MAX_LENGTH
 from django.conf import settings
 from django.db import models
 
 # Create your models here.
 class Song(models.Model):
-    title = models.CharField(max_length=50)
-    artist = models.CharField(max_length=50)
+    #TODO: 음악 앨범 커버 필드 더하기
+    title = models.CharField(max_length=100)
+    artist = models.CharField(max_length=150)
     youtube_link = models.URLField(blank=True)
     energy = models.IntegerField(default=-1)
     valence = models.IntegerField(default=-1)
+#TODO:  split 
+"""
+class Song_tag:
+    tag = models
+    energy = models.
+    valence = 
+"""
 
 class PlayList(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='playlist_owner')
-    title = models.CharField(max_length=50)#FIXME set default title regulary
+    title = models.CharField(max_length=150)#FIXME set default title regulary
     created_at = models.DateTimeField(auto_now_add=True)
+    desc = models.TextField(blank=True)
 
 class PlayListAndSongJoin(models.Model):
     playlist_id = models.IntegerField(default=0)

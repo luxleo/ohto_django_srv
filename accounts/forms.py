@@ -24,7 +24,7 @@ class SignUpForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name','last_name','website_url','bio','phone_number','gender','avatar']
+        fields = ['first_name','last_name','phone_number','avatar']
 
 class PasswordChangeForm(AuthPasswordChangeForm):
     def clean_new_password1(self) -> str:

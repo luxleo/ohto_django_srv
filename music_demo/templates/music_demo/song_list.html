@@ -77,7 +77,7 @@
             </div>
           </div>
         </div>
-      </div>
+    </div>
 {% endblock content %}
 {% block script %}
     <script>
@@ -98,17 +98,23 @@
             const playlists = document.querySelectorAll('.dropdown-item');
             playlists.forEach((playlist)=>playlist.addEventListener("click",addSongs));
         };
-        function show_playlist(e){
+        const show_playlist = async (e) =>{
             if (is_renderd){
                 return ;
             }
             is_renderd = true;
             const checked = document.querySelectorAll(".form-check-input:checked");
             console.log(checked.length);
-            httpRequest.open('GET','http://127.0.0.1:8000/template/mini_playlists',true);
-            httpRequest.send(null);
+            await fetch('http://localhost:8000/template/mini_playlists')
+            .then(res => res.json())
+            .then(data => {
+                const playlists_ul = document.getElementById('playlist_list_ul');
+                playlists_ul.innerHTML="";
+                data.forEach(el=>playlists_ul.innerHTML+=el.title)
+                //TODO: add playlist link
+            })
 
-        }
+        };
         const shower = document.querySelector('#show_playlist_button');
         shower.addEventListener("click",show_playlist);
 

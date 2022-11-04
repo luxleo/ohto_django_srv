@@ -6,7 +6,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'instagram_clone.settings.common')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ohto.settings.dev')
+    #NOTE: when run server on prod env should assign port: python3 manage.py runserver 0:8000
+    #NOTE: when run django app in prod "python3 manage.py runserver --settings=backend.settings.prod"
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

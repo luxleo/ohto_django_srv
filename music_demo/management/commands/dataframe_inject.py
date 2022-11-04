@@ -12,7 +12,7 @@ class Command(BaseCommand):
         csv_file_path = os.path.join(base_path,"data","for_django.csv")
         df = pd.read_csv(csv_file_path)
         for idx,row in df.iterrows():
-            Song.objects.create(title=row["song"],artist=row["artist"],energy=int(row["e_label"]),valence=int(row["v_label"]))
+            Song.objects.create(title=row["song"].strip(),artist=row["artist"].strip(),energy=int(row["e_label"]),valence=int(row["v_label"]))
         qs = Song.objects.all()
         print(f'song in file: {len(df)} created_song: {len(qs)}')
 
