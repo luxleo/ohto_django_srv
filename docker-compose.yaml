@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./server_nginx
+    ports: 
+      - "80:80"
+    depends_on: 
+      - django
+  mysql:
+    image: mysql
+    container_name: django-mysql
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=django_db
+  django:
+    container_name: django-main
+    build: ./ohto
+    command: gunicorn ohto.wsgi:application --bind 0:8000
+    expose: 
+      - "8000"
+    depends_on: 
+      - mysql
+    links:
+      - mysql:django-mysql
+    
+  
