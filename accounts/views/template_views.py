@@ -5,7 +5,7 @@ from django.contrib.auth.views import (LoginView,logout_then_login, PasswordChan
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm,ProfileForm,PasswordChangeForm
+from ..forms import SignUpForm,ProfileForm,PasswordChangeForm
 # Create your views here.
 
 def signup(req):

@@ -6,7 +6,7 @@
                 {% if not user.avatar %}
                     <svg width="120" height="120" data-jdenticon-value="{{user.username}}" class='rounded-circle'></svg>
                 {% else %}
-                    <img src="{{user.avatar.url}}" class='rounded-circle'/>
+                    <img width=48 src="{{user.avatar.url}}" class='rounded-circle'/>
                 {% endif %}
             </div>
             <div class='col-sm-9'>

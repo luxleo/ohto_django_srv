@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 #NOTE: 태그 14개인 이유: 클러스터링으로 추려낸것임을 강조
 from pathlib import Path
 import os
+from datetime import timedelta
+
 #TODO: add Elastic search
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -45,6 +47,8 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
     #Local App
     'accounts',
     'music_demo'
@@ -131,17 +135,41 @@ STATICFILES_DIRS=[
 ]
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = 'media/' #NOTE: 미디어 파일 접근시
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') #NOTE: 미디어 파일 저장 시
 
 AUTH_USER_MODEL = 'accounts.User'
 
+
+#NOTE: REST_FRAMEWORK의 DEFAULT_PERMISSION_CLASSES로 api view에 대한 전역 접근 권한을 설정한다.
 #Rest frame work로 url접근시 기본적으로 로그인 되어있고(IsAuthenticated)
 #로그인 되어있지 않다면 읽기만 가능하게 설정
 REST_FRAMEWORK = {
+        "DEFAULT_AUTHENTICATION_CLASSES":[
+        #NOTE: 순서 꼬이면 ImportError나더라
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
     "DEFAULT_PERMISSON_CLASSES":[
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ]
+    ],
+    "DEFAULT_SCHEMA_CLASS":'drf_spectacular.openapi.AutoSchema',
+}
+#NOTE: djangorestframework_simplejwt 설정
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'TOKEN_USER_CLASS': 'accounts.User'
+}
+#NOTE: api명세 drf_spectacular setting
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Ohto api server',
+    'DESCRIPTION': 'User, Song, Playlist API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

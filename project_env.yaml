@@ -13,3 +13,4 @@ dependencies:
   - mysqlclient
   - pandas
   - gunicorn
+  - djangorestframework_simplejwt

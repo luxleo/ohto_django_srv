@@ -1,6 +1,8 @@
 from .common import *
 #안티 패턴이지만 settings 에서는 모든 파일을 임포트 해와야 하므로 허용한다.
 
+#TODO:Let's encrypt로 ssl인증 발급
+
 #docker run 시
 #NOTE: 데이터 옮길때 mysql 설정: docker run -d -p 3306:3306 --name django-mysql -v `pwd`/data:/var/lib/mysql mysql
 

@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model
 
 from ..models import MoodTag, SituationTag, Song,PlayList,PlayListAndSongJoin, TopicTag
-from ..serializers import PlayListSerializer,PlayListCreateSerializer
+from ..serializers import PlayListSerializer
 import json
 
 class LandingPageView(views.APIView):
@@ -38,6 +38,7 @@ class SongListView(views.APIView):
 
     def get(self,req):
         search = req.GET.get('search',None)
+        print(req.GET)
         qs = Song.objects.filter(Q(artist__icontains=search) | Q(title__icontains=search))
         return Response({"songs":qs,'song_number':len(qs),"is_bulk":False})
 
