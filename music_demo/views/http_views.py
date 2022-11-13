@@ -102,6 +102,8 @@ class PlayListView(viewsets.ModelViewSet):
         #playlist/<int:playlist_id>/get_songs/로 접근하여 해당 playlist안에 곡들 반환
         instance = self.get_object()
         song_list = PlayListAndSongJoin.objects.filter(playlist_id=instance.id).values_list('song_id',flat=True)
+        songs = Song.objects.in_bulk(song_list)
+        serializer = self.get_serializer()
         res = {"song_list":list(song_list)}
         print(type(song_list))
         return Response(data=res,status=status.HTTP_200_OK)
@@ -153,15 +155,15 @@ class PlayListView(viewsets.ModelViewSet):
             value={"songs":[1,2,3,4,5,14,24]}
         )]
     )
-    @action(detail=True,methods=["DELETE"])
+    @action(detail=True,methods=["POST"])
     def delete_songs(self,req,pk):
         #playlist/<int:playlist_id>/delete_songs/로 접근하여 해당 playlist안에 선택한 곡 삭제
         instance_id = self.get_object().id
         song_list = req.data.get("songs",None)
         for song_id in song_list:
-            qs = PlayListAndSongJoin.objects.get(song_id=song_id)
+            qs = PlayListAndSongJoin.objects.get(song_id=song_id,playlist_id=instance_id)
             qs.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
     #NOTE:기본 메서드 list,create,retrieve,update,partial_update,destroy 6가지 있음
     @extend_schema(
         request=PlayListSerializer,

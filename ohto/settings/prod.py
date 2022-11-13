@@ -23,8 +23,11 @@ from .common import *
 #TODO:이미지 환경변수 env ['PROD','P3M']에 추가하기 
 
 #TODO:docker image hub에  django project 이미지 배포하기
-
+#TODO: elk 스택 대신 redis로 song(3000) 캐쉬해놓고 사용
+#TODO: full text search에 ELK 스택 말고 postgres 디비에서 지원하는 기본 기능 이용
+#TODO: compare each speed between using foreign key and query set using id_list
 #NOTE: prod 환경 설정시 debug false하여 메모리에 쿼리 누적되는것 방지 -> allowed-hosts에 지정된 호스트들만 접근 가능하게 설정
+
 DEBUG = os.environ.get('DEBUG') in ['true','True']
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS','localhost').split(',')
 

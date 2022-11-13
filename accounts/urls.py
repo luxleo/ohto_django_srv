@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from django.contrib.auth import views as auth_views
 from .views import template_views,views
+
 urlpatterns = [
     path('mypage/',views.MyPageView.as_view(),name='mypage'),
     path('signup/', views.SignUpView.as_view(),name='signup'),

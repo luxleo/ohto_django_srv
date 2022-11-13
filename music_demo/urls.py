@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import include, path
+from django.conf import settings
 
 from .views import http_views,template_views
 
@@ -22,4 +23,5 @@ template_urlpatterns=[
     path('template/playlist_list/',template_views.playlist_list,name='template/playlist_list'),
     path('template/Mypage/<str:user_name>',template_views.UserPageView.as_view(),name='template_user_page'),
 ]
-urlpatterns+=template_urlpatterns
+if not settings.DEBUG:
+    urlpatterns+=template_urlpatterns
