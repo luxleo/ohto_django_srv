@@ -9,10 +9,10 @@ git clone -b django --single-branch git@github.com:luxleo/ohto_django_srv.git
 ```mv to work_dir
 cd ohto_django_srv (work)
 ```
-```create env
+```
 conda env create -f env_conf.yaml
 ```
-```activate env
+```
 conda activate local_django
 ```
 
@@ -25,6 +25,8 @@ python3 manage.py createsuperuser
 ```
 python3 manage.py runserver
 ```
+
+### Login with Super user you created before
 
 ### Urls
 ## admin page (can manipulate, and monitor data) -> localhost:8000/admin
