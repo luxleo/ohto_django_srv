@@ -1,5 +1,12 @@
 from .common import *
 #안티 패턴이지만 settings 에서는 모든 파일을 임포트 해와야 하므로 허용한다.
+#TODO: 3000곡 필드 다 채워넣기
+#TODO: staticfile 경로 s3를 하든 file system을 이용하든
+#TODO: 이미지 경량화
+#TODO: 크롤링할 데이터: 각 곡당 커버이미지, 유튜브 url,가사(인수님 한테 물어보자)
+#TODO: 전문조회 한다면 일라스틱 서치와 postgres 전문 조회 비교
+#TODO: postgres사용시 cache하여 db부하 줄이기
+
 
 #TODO:Let's encrypt로 ssl인증 발급
 
@@ -24,9 +31,10 @@ from .common import *
 
 #TODO:docker image hub에  django project 이미지 배포하기
 #TODO: elk 스택 대신 redis로 song(3000) 캐쉬해놓고 사용
-#TODO: full text search에 ELK 스택 말고 postgres 디비에서 지원하는 기본 기능 이용
+#TODO: postgres 디비에서 지원하는 기본 기능 이용
 #TODO: compare each speed between using foreign key and query set using id_list
 #NOTE: prod 환경 설정시 debug false하여 메모리에 쿼리 누적되는것 방지 -> allowed-hosts에 지정된 호스트들만 접근 가능하게 설정
+
 
 DEBUG = os.environ.get('DEBUG') in ['true','True']
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS','localhost').split(',')
