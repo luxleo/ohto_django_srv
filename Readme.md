@@ -6,11 +6,13 @@ git clone -b django --single-branch git@github.com:luxleo/ohto_django_srv.git
 ```
 
 ### Create and Activate Anaconda Env
-```
+```mv to work_dir
 cd ohto_django_srv (work)
 ```
-```
+```create env
 conda env create -f env_conf.yaml
+```
+```activate env
 conda activate local_django
 ```
 
