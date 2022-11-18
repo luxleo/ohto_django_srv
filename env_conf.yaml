@@ -1,4 +1,4 @@
-name: #NAME YOU WANT TO BUILD WITH
+name: local_django
 channels:
   - conda-forge
   - defaults
