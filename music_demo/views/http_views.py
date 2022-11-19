@@ -36,6 +36,8 @@ class MyPaginationClass(PageNumberPagination):
     page_size_query_param='page_size'
     max_page_size=10
 
+#INFO:Song View Section
+
 class SongSearchView(views.APIView):
     permission_classes=[permissions.IsAuthenticated]
     @extend_schema(
@@ -210,10 +212,107 @@ class SongRecommendView(views.APIView):
         instance = Song.objects.filter(energy=energy,valence=valence)
         page = self.paginate_queryset(instance)
         if page is not None:
-            serializer = self.get_paginated_response(self.serializer_class(instance,many=True).data)
+            serializer = self.get_paginated_response(self.serializer_class(page,many=True).data)
         else:
             serializer= self.serializer_class(instance,many=True)
         return Response({"recommended_songs":serializer.data,"length":len(instance)})
+
+class SongFilterByTagView(views.APIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class= SongSerializer
+    pagination_class = MyPaginationClass
+
+    @property
+    def paginator(self):
+        if not hasattr(self,'_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+        else:
+            pass
+        return self._paginator
+
+    def paginate_queryset(self,queryset):
+        if self.paginator is None:
+            return None
+        return self.paginator.paginate_queryset(queryset,self.request,view=self)
+
+    def get_paginated_response(self,data):
+        assert self.paginator is not None
+        return self.paginator.get_paginated_response(data)
+
+    @extend_schema(
+        request=SongSerializer,
+        responses={200:SongSerializer},
+        parameters=[
+            OpenApiParameter.HEADER,
+            OpenApiParameter(name='jwt.token',description="헤더에 실을 웹토큰 필수로 넣어야한다."),
+            OpenApiParameter(name='tags',description="query string 형식으로 보내며 키는 tags로 보낸다."),
+        ],
+        summary='jwt 필요, tags 값에 들어온 tag에 맞는 곡을 필터링한다 tag는 topic,mood,situation 종류별로 한개씩만 가능하며 3개까지 허용한다.',
+        examples=[
+            OpenApiExample(
+                'tags 쿼리스트링으로 검색할때.',
+                description="쿼리스트링에 search 키값으로 제목이나 가수를 넘긴다.",
+                value=['songs/filter_by_tags/?tags=그리움','songs/filter_by_tags/?tags=그리움&tags=휴삭']),
+            OpenApiExample(
+                'tags 필터링 반환값.',
+                description="paginating 적용되어 한페이지 10개씩 최대 100곡 반환한다 next,previous는 이전, 다음페이지 url 이다.",
+                value={
+                    "count": 167,
+                    "next": "http://localhost:8000/songs/filter_by_tags/?page=3&tags=%EA%B7%B8%EB%A6%AC%EC%9B%80&tags=%ED%9C%B4%EC%8B%9D&tags=%EC%9D%B4%EB%B3%84",
+                    "previous": "http://localhost:8000/songs/filter_by_tags/?page=1?tags=%EA%B7%B8%EB%A6%AC%EC%9B%80&tags=%ED%9C%B4%EC%8B%9D&tags=%EC%9D%B4%EB%B3%84",
+                    "results": [
+                        {
+                            "id": 8831,
+                            "title": "밤편지",
+                            "artist": "아이유(IU)",
+                            "youtube_link": "https://youtube.com/watch?v=BzYnNdJhZQw",
+                            "tags": "[\"이별\", \"그리움\", \"휴식\"]"
+                        },
+                        {
+                            "id": 8835,
+                            "title": "봄날",
+                            "artist": "방탄소년단",
+                            "youtube_link": "https://youtube.com/watch?v=xEeFrLSkMm8",
+                            "tags": "[\"이별\", \"그리움\", \"휴식\"]"
+                        }]}
+            )]
+    )
+    def get(self,req,format=None,*args,**kwargs):
+        #NOTE: query string list로 받는 방법
+        tags = req.GET.getlist('tags',None)
+        tag_num = len(tags)
+        #TODO: tags가 None이면 redirect하기
+        if tag_num == 1:
+            instance = Song.objects.filter(tags__icontains=tags[0])
+            page = self.paginate_queryset(instance)
+            if page is not None:
+                serializer = self.get_paginated_response(self.serializer_class(page,many=True).data)
+            else:
+                serializer= self.serializer_class(instance,many=True)
+            return Response(serializer.data)
+        if tag_num == 2:
+            instance = Song.objects.filter(tags__icontains=tags[0]).filter(tags__icontains=tags[1])
+            page = self.paginate_queryset(instance)
+            if page is not None:
+                serializer = self.get_paginated_response(self.serializer_class(page,many=True).data)
+            else:
+                serializer= self.serializer_class(instance,many=True)
+            return Response(serializer.data)
+        if tag_num ==3 :
+            instance = Song.objects.filter(tags__icontains=tags[0]).filter(tags__icontains=tags[1]).filter(tags__icontains=tags[2])
+            page = self.paginate_queryset(instance)
+            if page is not None:
+                serializer = self.get_paginated_response(self.serializer_class(page,many=True).data)
+            else:
+                serializer= self.serializer_class(instance,many=True)
+            return Response(serializer.data)
+        
+
+
+#INFO:Playlist View Section
 
 class PlayListView(viewsets.ModelViewSet):
     queryset = PlayList.objects.all()
@@ -396,6 +495,18 @@ class PlayListView(viewsets.ModelViewSet):
 
 #아래 처럼 개별로 지정 할 수도있고 한꺼번에 router처리도 가능함
 #playlist_list_view = PlayListListView.as_view({'get':'list'})
+
+#INFO:Tag View Section
+
+class TagListView(views.APIView):
+    def get(self,req,*args,**kwargs):
+        mood_tags=['당당한','연인','위로','이별']
+        topic_tags=['그리움','기쁨','슬픔','신나는','잔잔한','편안한']
+        situation_tags=['공부','운동','파티','휴식']
+        return Response({"tags":{
+            "topic_tags":topic_tags,"mood_tags":mood_tags,"situation_tags":situation_tags
+        }})
+
 
 
 
