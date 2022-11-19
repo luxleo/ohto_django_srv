@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.pagination import PageNumberPagination
 
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
@@ -29,6 +30,11 @@ from ..models import PlayList, Song, PlayListAndSongJoin
 class IsOwner(permissions.BasePermission):
     def has_object_permssion(self,request,view,obj):
         return obj.owner == request.user
+
+class MyPaginationClass(PageNumberPagination):
+    page_size=10
+    page_size_query_param='page_size'
+    max_page_size=10
 
 class SongSearchView(views.APIView):
     permission_classes=[permissions.IsAuthenticated]
@@ -59,9 +65,155 @@ class SongSearchView(views.APIView):
     )
     def get(self,req,format=None):
         search=req.GET.get('search',None)
-        qs = Song.objects.filter(Q(title__icontains=search) | Q(artist__icontains=search))
+        qs = Song.objects.filter(Q(title__icontains=search) | Q(artist__icontains=search)).order_by('id')[:10]
         serializer = SongSerializer(qs,many=True)
         return Response({"songs":serializer.data,"length":len(serializer.data)})
+
+class SongRecommendView(views.APIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class= SongSerializer
+    pagination_class = MyPaginationClass
+
+    @property
+    def paginator(self):
+        if not hasattr(self,'_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+        else:
+            pass
+        return self._paginator
+
+    def paginate_queryset(self,queryset):
+        if self.paginator is None:
+            return None
+        return self.paginator.paginate_queryset(queryset,self.request,view=self)
+
+    def get_paginated_response(self,data):
+        assert self.paginator is not None
+        return self.paginator.get_paginated_response(data)
+
+
+    @extend_schema(
+        request=SongSerializer,responses={200:SongSerializer},
+        parameters=[
+            OpenApiParameter.HEADER,OpenApiParameter(name='jwt.token',description="헤더에 실을 웹토큰 필수로 넣어야한다."),OpenApiParameter(name='pk',description="추천 받고자하는 곡의 id이다"),
+        ],
+        summary='jwt 필요, 추천 받고자 하는 곡의 가사기반 태그와 e,vlabel 이 같은 곡들을 paginating형식으로 반환 (한 페이지에 10곡씩 최대 100곡까지 추천).',
+        examples=[
+            OpenApiExample(
+            "id 8900곡 추천 곡 요청할때",
+            description="쿼리스트링에 search 키값으로 제목이나 가수를 넘긴다.",
+            value='http://localhost:8000/songs/recommand_this_song/8900/?page=2'
+        ),
+        OpenApiExample(
+            'id 8900곡 추천 곡 요청 반환값.',
+            description="곡중 제목이나 가수를 포함하는 곡들을 반환하고 이전 페이지 이후 페이지 반환한다.",
+            value={
+            'links': {
+                'next': "http://localhost:8000/songs/recommand_this_song/8900/?page=3",
+                'previous': "http://localhost:8000/songs/recommand_this_song/8900/"
+            },
+            'count': 100,
+            'results': [
+        {
+            "id": 8844,
+            "title": "주저하는 연인들을 위해",
+            "artist": "잔나비",
+            "youtube_link": "https://youtube.com/watch?v=5g4KsIizYhQ",
+            "tags": "[\"연인\", \"슬픔\", \"휴식\"]"
+        },
+        {
+            "id": 8845,
+            "title": "Someone Like You",
+            "artist": "Adele",
+            "youtube_link": "https://youtube.com/watch?v=hLQl3WQQoQ0",
+            "tags": "[\"연인\", \"잔잔한\", \"휴식\"]"
+        },
+        {
+            "id": 8846,
+            "title": "너의 모든 순간",
+            "artist": "성시경",
+            "youtube_link": "https://youtube.com/watch?v=evOsUf9en-Y",
+            "tags": "[\"연인\", \"그리움\", \"휴식\"]"
+        },
+        {
+            "id": 8847,
+            "title": "비도 오고 그래서 (Feat. 신용재)",
+            "artist": "헤이즈 (Heize)",
+            "youtube_link": "https://youtube.com/watch?v=afxLaQiLu-o",
+            "tags": "[\"연인\", \"슬픔\", \"휴식\"]"
+        },
+        {
+            "id": 8848,
+            "title": "걱정말아요 그대",
+            "artist": "이적",
+            "youtube_link": "https://youtube.com/watch?v=Dic27EnDDls",
+            "tags": "[\"위로\", \"잔잔한\", \"휴식\"]"
+        },
+        {
+            "id": 8849,
+            "title": "우주를 줄게",
+            "artist": "볼빨간사춘기",
+            "youtube_link": "https://youtube.com/watch?v=9U8uA702xrE",
+            "tags": "[\"연인\", \"기쁨\", \"운동\"]"
+        },
+        {
+            "id": 8850,
+            "title": "Beautiful",
+            "artist": "Crush",
+            "youtube_link": "https://youtube.com/watch?v=_5TJcaHO2gU",
+            "tags": "[\"연인\", \"그리움\", \"휴식\"]"
+        },
+        {
+            "id": 8852,
+            "title": "선물",
+            "artist": "멜로망스(Melomance)",
+            "youtube_link": "https://youtube.com/watch?v=qYYJqWsBb1U",
+            "tags": "[\"연인\", \"잔잔한\", \"휴식\"]"
+        },
+        {
+            "id": 8853,
+            "title": "좋니",
+            "artist": "윤종신",
+            "youtube_link": "https://youtube.com/watch?v=jy_UiIQn_d0",
+            "tags": "[\"이별\", \"그리움\", \"휴식\"]"
+        },
+        {
+            "id": 8855,
+            "title": "Lost Stars",
+            "artist": "Adam Levine",
+            "youtube_link": "https://youtube.com/watch?v=cL4uhaQ58Rk",
+            "tags": "[\"연인\", \"신나는\", \"운동\"]"
+        }
+    ]
+        }
+        )]
+    )
+    def get(self,req,pk,format=None,*args,**kwargs):
+        current_song= get_object_or_404(Song,id=pk)
+
+        energy=current_song.energy
+        valence = current_song.valence
+        if current_song.tags != '':
+            tags = json.loads(current_song.tags)
+            topic_tag = tags[0]
+            situation_tag = tags[-1]
+            instance = Song.objects.filter(Q(energy=energy)&Q(valence=valence)&(Q(tags__icontains=topic_tag) | Q(tags__icontains=situation_tag)))[:100]
+            page = self.paginate_queryset(instance)
+            if page is not None:
+                serializer = self.get_paginated_response(self.serializer_class(page,many=True).data)
+            else:
+                serializer = self.serializer_class(instance,many=True)
+            return Response(serializer.data)
+        instance = Song.objects.filter(energy=energy,valence=valence)
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(instance,many=True).data)
+        else:
+            serializer= self.serializer_class(instance,many=True)
+        return Response({"recommended_songs":serializer.data,"length":len(instance)})
 
 class PlayListView(viewsets.ModelViewSet):
     queryset = PlayList.objects.all()
@@ -139,6 +291,7 @@ class PlayListView(viewsets.ModelViewSet):
             if join_serializer.is_valid():
                 join_serializer.save()
         return Response(status=status.HTTP_201_CREATED)
+
     @extend_schema(
         request=PlayListSerializer,
         responses={200:PlayListSerializer},

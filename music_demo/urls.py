@@ -12,6 +12,7 @@ router.register('playlist',http_views.PlayListView)
 urlpatterns=[
     path('',include(router.urls)),
     path('songs/search/',http_views.SongSearchView.as_view()),
+    path('songs/recommand_this_song/<int:pk>/',http_views.SongRecommendView.as_view())
 ]
 
 template_urlpatterns=[
