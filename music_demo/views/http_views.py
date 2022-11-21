@@ -37,6 +37,11 @@ class MyPaginationClass(PageNumberPagination):
     max_page_size=10
 
 #INFO:Song View Section
+class SongListView(views.APIView):
+    def get(self,req,*args,**kwargs):
+        instance = Song.objects.all()
+        serializer = SongSerializer(instance,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 class SongSearchView(views.APIView):
     permission_classes=[permissions.IsAuthenticated]
@@ -310,7 +315,11 @@ class SongFilterByTagView(views.APIView):
                 serializer= self.serializer_class(instance,many=True)
             return Response(serializer.data)
         
-
+class SongDetailView(views.APIView):
+    def get(self,req,pk):
+        song = get_object_or_404(Song,pk=pk)
+        serializer = SongSerializer(song)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 #INFO:Playlist View Section
 
@@ -446,8 +455,16 @@ class PlayListView(viewsets.ModelViewSet):
         ],
         summary='jwt 필요, 입력한 대로 플레이리스트 생성.',
     )
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+    def create(self, req, *args, **kwargs):
+        data = req.data.copy()
+        print(data)
+        print(json.dumps(data['tags']),type(json.dumps(data['tags'])))
+        obj = {"title":data['title'], "desc":data['desc'],'cover_img':data['cover_img'],'tags':json.dumps(data['tags'])}
+        serializer = PlayListSerializer(data=obj)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     @extend_schema(
         request=PlayListSerializer,
         responses={200:PlayListSerializer},
@@ -500,8 +517,8 @@ class PlayListView(viewsets.ModelViewSet):
 
 class TagListView(views.APIView):
     def get(self,req,*args,**kwargs):
-        mood_tags=['당당한','연인','위로','이별']
-        topic_tags=['그리움','기쁨','슬픔','신나는','잔잔한','편안한']
+        topic_tags=['당당한','연인','위로','이별']
+        mood_tags=['그리움','기쁨','슬픔','신나는','잔잔한','편안한']
         situation_tags=['공부','운동','파티','휴식']
         return Response({"tags":{
             "topic_tags":topic_tags,"mood_tags":mood_tags,"situation_tags":situation_tags

@@ -32,7 +32,8 @@ class PlayList(models.Model):
     title = models.CharField(max_length=150)#FIXME set default title regulary
     created_at = models.DateTimeField(auto_now_add=True)
     desc = models.TextField(blank=True)
-    cover_img = models.ImageField(blank=True,upload_to="playlists/cover_images/%Y/%m")
+    cover_img = models.ImageField(blank=True,upload_to="playlists/cover_images/%Y/%m",null=True)
+    tags = models.CharField(max_length=250,blank=True)
 
 class PlayListAndSongJoin(models.Model):
     playlist_id = models.IntegerField(default=0)

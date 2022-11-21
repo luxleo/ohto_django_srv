@@ -13,7 +13,7 @@ class MyPageSerializer(serializers.ModelSerializer):
 class PlayListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayList
-        fields = ["id","title","desc","cover_img"]
+        fields = ["id","title","desc","cover_img","tags"]
         ordering = ['-created_at']
 
 class PlayListSongJoinSerializer(serializers.ModelSerializer):
