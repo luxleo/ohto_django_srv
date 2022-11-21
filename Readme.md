@@ -26,6 +26,24 @@ python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
+### When run source on production env
+```
+python3 manage.py runserver --settings=ohto.settings.prod
+```
+```
+#Database config
+
+DATABASES = {
+    'default':{
+        'ENGINE':'django.db.backends.mysql',
+        'NAME':'django_db',
+        'USER':'root',
+        'PASSWORD':'1234',
+        'HOST':'django-mysql',
+        'PORT':'3306'
+    }
+}
+```
 ### Login with Super user you created before
 
 ### Urls
