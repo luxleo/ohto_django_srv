@@ -183,9 +183,8 @@ INTERNAL_IPS = [
 ]
 #Cors config
 CORS_ALLOWED_ORIGINS=[
-
+'10.0.2.2'
 ]
-CORS_ALLOW_ALL_ORIGINS=True
 
 #TODO: s3
 #TODO: 이미지 작성(도커 이미지 작성)
