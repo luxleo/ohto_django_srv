@@ -46,6 +46,12 @@ DATABASES = {
 ```
 ### Login with Super user you created before
 
+### If you need update requirements.txt file
+```
+pip list --format=freeze > requirements.txt
+```
+
 ### Urls
+
 ## admin page (can manipulate, and monitor data) -> localhost:8000/admin
 ## view API on swagger -> localhost:8000/api/schema/swagger-ui/

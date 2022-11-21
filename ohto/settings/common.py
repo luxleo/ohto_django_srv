@@ -187,5 +187,7 @@ CORS_ALLOWED_ORIGINS=[
 ]
 CORS_ALLOW_ALL_ORIGINS=True
 
-
-
+#TODO: s3
+#TODO: 이미지 작성(도커 이미지 작성)
+#TODO: 태그 추가(계절,장르)
+#TODO: 테마 mbti

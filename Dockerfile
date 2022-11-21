@@ -1,13 +1,12 @@
-FROM continuumio/miniconda3:latest
+FROM python:3.10
 
 RUN apt-get update && apt-get install vim -y
 
 WORKDIR /django_project/
-RUN mkdir DEV 
-ADD . /django_project/DEV
+ADD . /django_project/
 
-WORKDIR /django_project/DEV
-RUN conda env update --file project_env.yaml --name base
+WORKDIR /django_project/
+RUN pip install -r ./requirements.txt 
 
 
 ENV PYTHONUNBUFFERD=1
