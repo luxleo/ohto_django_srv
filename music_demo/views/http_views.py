@@ -446,6 +446,7 @@ class PlayListView(viewsets.ModelViewSet):
     )
     def list(self,req,format=None):
         return super().list(req)
+
     @extend_schema(
         request=PlayListSerializer,
         responses={200:PlayListSerializer},
@@ -454,6 +455,11 @@ class PlayListView(viewsets.ModelViewSet):
             OpenApiParameter(name='jwt.token',description="입력한대로 플레이리스트 만들고 id필드 추가해서 같이 반환."),
         ],
         summary='jwt 필요, 입력한 대로 플레이리스트 생성.',
+        examples=[
+            OpenApiExample(
+            "POST 요청 할때 넣을 필드 값",description="유저가 가지고 있는 플레이리스트 반환.",
+            value={"title": "string","desc": "string","cover_img": "string","tags": ["tag1","tag2","tag3"]}
+        )]
     )
     def create(self, req, *args, **kwargs):
         data = req.data.copy()
