@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-v6w_8s=)_(rbclexof0=r$4epuwdm$x#wd77v$3i!0+4(q^b0x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2']
+ALLOWED_HOSTS = ['10.0.2.2','localhost']
 
 
 # Application definition
@@ -183,7 +183,7 @@ INTERNAL_IPS = [
 ]
 #Cors config
 CORS_ALLOWED_ORIGINS=[
-'10.0.2.2'
+'http://10.0.2.2'
 ]
 
 #TODO: s3

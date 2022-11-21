@@ -23,7 +23,7 @@ python3 manage.py createsuperuser
 
 ### Run Django Server On localhost:8000
 ```
-python3 manage.py runserver
+gunicorn --bind 0:8000 ohto.wsgi:application
 ```
 
 ### When run source on production env
