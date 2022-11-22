@@ -33,26 +33,7 @@ ALLOWED_HOSTS = ['10.0.2.2','localhost']
 
 # Application definition
 
-INSTALLED_APPS = [
-    #django Apps
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    #Third Apps
-    'django_extensions',
-    'debug_toolbar',
-    'django_bootstrap5',
-    'rest_framework',
-    'corsheaders',
-    'rest_framework_simplejwt',
-    'drf_spectacular',
-    #Local App
-    'accounts',
-    'music_demo'
-]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

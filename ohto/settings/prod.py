@@ -39,6 +39,25 @@ from .common import *
 DEBUG = os.environ.get('DEBUG') in ['true','True']
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS','localhost').split(',')
 
+INSTALLED_APPS = [
+    #django Apps
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    #Third Apps
+    'django_extensions',
+    'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
+    #Local App
+    'accounts',
+    'music_demo'
+]
+
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.mysql',

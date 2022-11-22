@@ -2,11 +2,11 @@ FROM python:3.10
 
 RUN apt-get update && apt-get install vim -y
 
-WORKDIR /django_project/
-ADD . /django_project/
+WORKDIR /django_project
+ADD . /django_project
 
-WORKDIR /django_project/
-RUN pip install -r ./requirements.txt 
+ENV DJANGO_SETTINGS_MODULE=ohto.settings.prod
+RUN pip install -r ./requirements/prod.txt 
 
 
 ENV PYTHONUNBUFFERD=1
