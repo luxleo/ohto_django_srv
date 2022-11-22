@@ -19,7 +19,11 @@ services:
   django:
     container_name: django-main
     build: ./ohto
-    command: gunicorn ohto.wsgi:application --bind 0:8000
+    working_dir: /django_project
+    command: >
+      bash -c "python3 /django_project/manage.py makemigrations
+      && python3 /django_project/manage.py migrate
+      && gunicorn --bind 0:8000 ohto.wsgi:application"
     expose: 
       - "8000"
     depends_on: 
@@ -27,4 +31,3 @@ services:
     links:
       - mysql:django-mysql
     
-  
