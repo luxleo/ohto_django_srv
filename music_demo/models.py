@@ -6,8 +6,8 @@ import json
 # Create your models here.
 class Song(models.Model):
     #TODO: 음악 앨범 커버 필드 더하기
-    title = models.CharField(max_length=100)
-    artist = models.CharField(max_length=150)
+    title = models.CharField(max_length=250)
+    artist = models.CharField(max_length=250)
     youtube_link = models.URLField(blank=True)
     energy = models.IntegerField(default=-1)
     valence = models.IntegerField(default=-1)
@@ -29,7 +29,7 @@ class Song_tag:
 
 class PlayList(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='playlist_owner')
-    title = models.CharField(max_length=150)#FIXME set default title regulary
+    title = models.CharField(max_length=250)#FIXME set default title regulary
     created_at = models.DateTimeField(auto_now_add=True)
     desc = models.TextField(blank=True)
     cover_img = models.ImageField(blank=True,upload_to="playlists/cover_images/%Y/%m",null=True)

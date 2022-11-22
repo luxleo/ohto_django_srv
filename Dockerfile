@@ -7,8 +7,7 @@ ADD . /django_project
 
 ENV DJANGO_SETTINGS_MODULE=ohto.settings.prod
 RUN pip install -r ./requirements/prod.txt 
-
-
 ENV PYTHONUNBUFFERD=1
-ENV PROD=--settings.ohto.settings.prod
+
+
 

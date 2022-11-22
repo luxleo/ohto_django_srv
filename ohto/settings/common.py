@@ -35,17 +35,7 @@ ALLOWED_HOSTS = ['10.0.2.2','localhost']
 
 
 
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+
 
 ROOT_URLCONF = 'ohto.urls'
 
@@ -131,6 +121,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ],
+
     "DEFAULT_PERMISSON_CLASSES":[
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
@@ -157,11 +148,7 @@ SPECTACULAR_SETTINGS = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #django_debug_toolbar setting
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+
 #Cors config
 CORS_ALLOWED_ORIGINS=[
 'http://10.0.2.2'
