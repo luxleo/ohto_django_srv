@@ -463,7 +463,10 @@ class PlayListView(viewsets.ModelViewSet):
     )
     def create(self, req, *args, **kwargs):
         data = req.data.copy()
+        if 'cover_img' not in data:
+            data['cover_img'] = None
         obj = {"title":data['title'], "desc":data['desc'],'cover_img':data['cover_img'],'tags':json.dumps(data['tags'])}
+        print(obj)
         serializer = PlayListSerializer(data=obj)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

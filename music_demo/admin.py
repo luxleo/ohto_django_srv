@@ -16,6 +16,11 @@ class SongAdmin(admin.ModelAdmin):
 
 @admin.register(PlayList)
 class PlayListAdmin(admin.ModelAdmin):
-    list_display=['owner','created_at','title']
+    list_display=['owner','title','image_cover']
     search_fields = ['owner']
+
+    def image_cover(self,playlist):
+        if playlist.cover_img:
+            return mark_safe(f'<img src="{playlist.cover_url}" style="width: 30%;"/>')
+        return None
 
