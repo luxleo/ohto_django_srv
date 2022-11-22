@@ -16,7 +16,9 @@ control + c: for escaping
 ```
 docker-compose up
 ```
+
 ### after this command, all containers would be connected to each other
+
 
 ## 3. data push
 
@@ -24,4 +26,9 @@ docker-compose up
 
 ```
 docker exec -i django-main sh
+```
+
+### then push data
+```
+python3 manage.py dataframe_inject && python3 manage.py json_data_inject
 ```
