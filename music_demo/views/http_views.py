@@ -439,7 +439,7 @@ class PlayListView(viewsets.ModelViewSet):
             "list조회시",
             description="유저가 가지고 있는 플레이리스트 반환.",
             value=[
-                {"id": 0,"title": "string","desc": "플레이리스트 설명string","cover_img": "img_url(str)"},
+                {"id": 0,"title": "string","desc": "플레이리스트 설명string","cover_img": "img_url(str)","tags":""},
                 {"id": 1,"title": "string","desc": "string","cover_img": "img_url(str)"},
                 {"id": 2,"title": "string","desc": "string","cover_img": "img_url(str)"},]
         )]
@@ -482,7 +482,7 @@ class PlayListView(viewsets.ModelViewSet):
             OpenApiParameter.HEADER,
             OpenApiParameter(name='jwt.token',description="jwt 필요, 유저가 보유한 플레이리스트 중, 조회한 id와 일치하는 플레이리스트 반환."),
         ],
-        examples=[OpenApiExample(name='응답',value={"playlist_meta": {"id": 27,"title": "gaga","desc": "","cover_img": None},
+        examples=[OpenApiExample(name='응답',value= {"id": 27,"title": "gaga","desc": "","cover_img": None,
     "tags": ["hello","from","hell"]
 })],
         summary='jwt 필요, 유저가 보유한 플레이리스트 중, 조회한 id와 일치하는 플레이리스트 반환.',
@@ -493,7 +493,7 @@ class PlayListView(viewsets.ModelViewSet):
         serializer = PlayListRetrieveSerializer(obj)
         tags = obj.tags
         tags = json.loads(tags)
-        return Response({"playlist_meta":serializer.data,"tags":tags})
+        return Response({"tags":tags,**serializer.data})
 
     @extend_schema(
         request=PlayListSerializer,
