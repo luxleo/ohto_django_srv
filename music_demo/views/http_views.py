@@ -18,7 +18,7 @@ from django.db.models import Q
 
 import json
 
-from ..serializers import PlayListSerializer, SongSerializer,PlayListSongJoinSerializer
+from ..serializers import PlayListSerializer, SongSerializer,PlayListSongJoinSerializer,PlayListRetrieveSerializer
 from ..models import PlayList, Song, PlayListAndSongJoin
 
 #NOTE: DRF에서는 as_view함수 호출시 django csrf_exepmt가 데코레이터로 감싸져 csrf체크를 하지 않는다.
@@ -470,7 +470,6 @@ class PlayListView(viewsets.ModelViewSet):
         else:
             tags=json.dumps(data['tags'])
         obj = {"title":data['title'], "desc":data['desc'],'cover_img':data['cover_img'],'tags':tags}
-        print(obj)
         serializer = PlayListSerializer(data=obj)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -483,10 +482,19 @@ class PlayListView(viewsets.ModelViewSet):
             OpenApiParameter.HEADER,
             OpenApiParameter(name='jwt.token',description="jwt 필요, 유저가 보유한 플레이리스트 중, 조회한 id와 일치하는 플레이리스트 반환."),
         ],
+        examples=[OpenApiExample(name='응답',value={"playlist_meta": {"id": 27,"title": "gaga","desc": "","cover_img": None},
+    "tags": ["hello","from","hell"]
+})],
         summary='jwt 필요, 유저가 보유한 플레이리스트 중, 조회한 id와 일치하는 플레이리스트 반환.',
     )
     def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        pk = args
+        obj = self.get_object()
+        serializer = PlayListRetrieveSerializer(obj)
+        tags = obj.tags
+        tags = json.loads(tags)
+        return Response({"playlist_meta":serializer.data,"tags":tags})
+
     @extend_schema(
         request=PlayListSerializer,
         responses={200:PlayListSerializer},

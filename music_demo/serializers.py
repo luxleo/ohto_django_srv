@@ -16,6 +16,12 @@ class PlayListSerializer(serializers.ModelSerializer):
         fields = ["id","title","desc","cover_img","tags"]
         ordering = ['-created_at']
 
+class PlayListRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlayList
+        fields = ["id","title","desc","cover_img"]
+        ordering=['-created_at']
+
 class PlayListSongJoinSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayListAndSongJoin
